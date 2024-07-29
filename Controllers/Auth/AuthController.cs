@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ServeBooks.App.Interfaces.Auth;
@@ -94,6 +95,12 @@ namespace ServeBooks.Controllers.Auth
                 if (login == null)
                 {
                     return StatusCode((int)authStatusCode, authMessage);
+                }
+
+                // Check if the user has the "Admin" role
+                if (login.Role != "Admin")
+                {
+                    return Ok("Login successful, but no token provided as the user is not an Admin.");
                 }
 
                 // Generate an authentication token
