@@ -1,15 +1,10 @@
-using System.Text.Json.Serialization;
-
-namespace ServeBooks.Models
+namespace ServeBooks.DTOs
 {
-    public class User
+    public class UserDTO
     {
-        public int Id { get; set; }
         public string? Name { get; set; }
         public string? Email { get; set; }
         public byte[]? Password { get; set; }
         public DateTime? RegistrationDate { get; set; }
-        [JsonIgnore]
-        public ICollection<Loan>? Loans { get; set; }
     }
 }
