@@ -1,10 +1,9 @@
-namespace ServeBooks.DTOs
+namespace ServeBooks.Dtos
 {
-    public class UserDTO
+    public class UserRegisterDTO
     {
         public string? Name { get; set; }
         public string? Email { get; set; }
         public string? Password { get; set; }
-        public DateTime? RegistrationDate { get; set; }
     }
 }
