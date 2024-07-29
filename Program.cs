@@ -3,6 +3,8 @@ using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using ServeBooks.App.Interfaces;
+using ServeBooks.App.Services;
 using ServeBooks.Data;
 using System.Reflection;
 using ServeBooks.App.Extensions;
@@ -16,6 +18,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddControllers();
+
+builder.Services.AddScoped<IExcelRepository, ExcelRepository>();
 
 //Configure CORS
 builder.Services.AddCors(options =>
