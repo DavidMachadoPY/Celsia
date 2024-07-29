@@ -19,7 +19,7 @@ namespace ServeBooks.Models
         public string? Email { get; set; }
 
         [Required(ErrorMessage = "Password is Required")]
-        public byte[]? Password { get; set; }
+        public string? Password { get; set; }
         
         [Required (ErrorMessage = "RegistrationDate is Required")]
         public DateTime? RegistrationDate { get; set; }

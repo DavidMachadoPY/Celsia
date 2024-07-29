@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ServeBooks.App.Interfaces;
 
@@ -27,6 +28,7 @@ namespace ServeBooks.Controllers
         }
 
         //Method to download Excel file with the data of books and customers
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public IActionResult GetStadistics()
         {
