@@ -10,6 +10,7 @@ using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
+using ServeBooks.App.Utils.Email;
 
 namespace ServeBooks.App.Services.Auth
 {
@@ -49,6 +50,17 @@ namespace ServeBooks.App.Services.Auth
             // Add and save the user
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
+
+            string textSubject = $"🎉 Welcome to ServeBooks, {name}! Your Adventure Begins Now! 🎉";
+            string textBody = $"Hello {name}!\n\n" +
+                              $"Welcome to ServeBooks! We're thrilled to have you on board. " +
+                              "Whether you're here for the latest bestsellers, timeless classics, or hidden gems, " +
+                              "we've got it all. Get ready to dive into a world of endless stories and knowledge. " +
+                              "And remember, the only thing you need to bring is your love for reading!\n\n" +
+                              "Happy Reading!\nThe ServeBooks Team";
+
+            var sendEmail = new MailersendUtils();
+            await sendEmail.EnviarCorreo(email, textSubject, textBody);
 
             return (user, "User registered successfully.", HttpStatusCode.Created);
         }
@@ -90,6 +102,17 @@ namespace ServeBooks.App.Services.Auth
                 return (null!, "The email or password is incorrect.", HttpStatusCode.NotFound);
             }
 
+            // Enviar correo electrónico al usuario después de iniciar sesión
+            string textSubject = $"🌟 Welcome Back, {user.Name}! Ready for Another Great Read? 🌟";
+            string textBody = $"Hi {user.Name}!\n\n" +
+                              $"It's great to see you again at ServeBooks! We hope you find your next favorite book today. " +
+                              "Remember, if you need any recommendations or assistance, we're here to help. " +
+                              "Dive back in and enjoy your reading journey!\n\n" +
+                              "Cheers,\nThe ServeBooks Team";
+
+            var sendEmail = new MailersendUtils();
+            await sendEmail.EnviarCorreo(user.Email!, textSubject, textBody);
+
             return (user, "Email and password found, login successful.", HttpStatusCode.OK);
         }
 
@@ -110,13 +133,12 @@ namespace ServeBooks.App.Services.Auth
                 issuer: _configuration["Jwt:Issuer"],
                 audience: _configuration["Jwt:Issuer"],
                 claims: claims,
-                expires: DateTime.Now.AddMinutes(120),
+                expires: DateTime.Now.AddMinutes(5),
                 signingCredentials: credentials
             );
 
             var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
             return (tokenString, "Token generated successfully.", user.Role!);  // Retornar también el rol del usuario
         }
-
     }
 }
