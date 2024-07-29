@@ -1,7 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Text.Json.Serialization;
 
 namespace ServeBooks.Models
 {
@@ -13,6 +10,7 @@ namespace ServeBooks.Models
         public byte[]? Password { get; set; }
         public string? Role { get; set; }
         public DateTime? RegistrationDate { get; set; }
+        [JsonIgnore]
         public ICollection<Loan>? Loans { get; set; }
     }
 }
