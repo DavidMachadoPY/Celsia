@@ -15,6 +15,7 @@ namespace ServeBooks.Models
         public DateOnly? PublicationDate { get; set; }
         public int NumberOfCopies { get; set; }
         public int AvailableCopies { get; set; }
+        public string? Status { get; set; }
         [JsonIgnore]
         public ICollection<Loan>? Loans { get; set; }
     }
