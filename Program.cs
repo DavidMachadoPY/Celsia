@@ -3,7 +3,12 @@ using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using ServeBooks.App.Interfaces;
+using ServeBooks.App.Services;
 using ServeBooks.Data;
+using System.Reflection;
+using ServeBooks.App.Extensions;
+using ServeBooks.App.Utils;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +18,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddControllers();
+
+builder.Services.AddScoped<IExcelRepository, ExcelRepository>();
 
 //Configure CORS
 builder.Services.AddCors(options =>
@@ -28,7 +35,7 @@ builder.Services.AddCors(options =>
 //Configure DbContext
 builder.Services.AddDbContext<ServeBooksContext>(options =>
 {
-    options.UseMySql(builder.Configuration.GetConnectionString("DefaultConnection"), Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.20-mysql"));
+    options.UseMySql(builder.Configuration.GetConnectionString("MySql"), Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.20-mysql"));
 });
 
 //Configure AutoMapper options
@@ -63,7 +70,11 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddAuthorization();
 
+// Services configuration
+builder.Services.AddServices(Assembly.GetExecutingAssembly());
 
+// AutoMapper configuration
+builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 // Configure DI
 
