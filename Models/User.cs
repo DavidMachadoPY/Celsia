@@ -11,6 +11,7 @@ namespace ServeBooks.Models
         public string? Name { get; set; }
         public string? Email { get; set; }
         public byte[]? Password { get; set; }
+        public string? Role { get; set; }
         public DateTime? RegistrationDate { get; set; }
         public ICollection<Loan>? Loans { get; set; }
     }
