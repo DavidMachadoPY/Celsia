@@ -1,8 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using ServeBooks.App.Interfaces;
@@ -56,7 +52,7 @@ namespace ServeBooks.App.Services
 
         public async Task<(IEnumerable<Book> books, string message, HttpStatusCode statusCode)> GetAllDeleted()
         {
-            var books = await _context.Books.Include(b => b.Loans).Where(f => f.Status!.ToLower() == "inactive").ToListAsync();
+            var books = await _context.Books.Include(b => b.Loans).Where(b => b.Status!.ToLower() == "inactive").ToListAsync();
             if (books.Any())
                 return (books, "Deleted books have been successfully obtained.", HttpStatusCode.OK);
             else
@@ -65,7 +61,7 @@ namespace ServeBooks.App.Services
 
         public async Task<(Book book, string message, HttpStatusCode statusCode)> GetById(int id)
         {
-            var book = await _context.Books.Include(b=> b.Loans).FirstOrDefaultAsync(f => f.Id.Equals(id));
+            var book = await _context.Books.Include(b=> b.Loans).FirstOrDefaultAsync(b => b.Id.Equals(id));
             if (book != null)
                 return (book, "Book has been successfully obtained.", HttpStatusCode.OK);
             else

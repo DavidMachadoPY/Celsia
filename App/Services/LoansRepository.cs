@@ -3,7 +3,7 @@ using System.Net;
 using AutoMapper;
 using ServeBooks.DTOs;
 using ServeBooks.Models;
-using ServeLoans.App.Interfaces;
+using ServeBooks.App.Interfaces;
 using ServeBooks.Data;
 
 namespace ServeBooks.App.Services
@@ -43,7 +43,7 @@ namespace ServeBooks.App.Services
 
         public async Task<(IEnumerable<Loan> loans, string message, HttpStatusCode statusCode)> GetAll()
         {
-            var loans = await _context.Loans.Include(l => l.Book).Include(l => l.User).Include(l => l.User).Where(f => f.Status!.ToLower() == "active").ToListAsync();
+            var loans = await _context.Loans.Include(l => l.Book).Include(l => l.User).Include(l => l.User).Where(l => l.Status!.ToLower() == "active").ToListAsync();
             if (loans.Any())
                 return (loans, "Loans have been successfully obtained.", HttpStatusCode.OK);
             else
@@ -52,7 +52,7 @@ namespace ServeBooks.App.Services
 
         public async Task<(IEnumerable<Loan> loans, string message, HttpStatusCode statusCode)> GetAllDeleted()
         {
-            var loans = await _context.Loans.Include(l => l.Book).Include(l => l.User).Where(f => f.Status!.ToLower() == "inactive").ToListAsync();
+            var loans = await _context.Loans.Include(l => l.Book).Include(l => l.User).Where(l => l.Status!.ToLower() == "inactive").ToListAsync();
             if (loans.Any())
                 return (loans, "Deleted loans have been successfully obtained.", HttpStatusCode.OK);
             else
@@ -61,7 +61,7 @@ namespace ServeBooks.App.Services
 
         public async Task<(Loan loan, string message, HttpStatusCode statusCode)> GetById(int id)
         {
-            var loan = await _context.Loans.Include(l => l.Book).Include(l => l.User).FirstOrDefaultAsync(f => f.Id.Equals(id));
+            var loan = await _context.Loans.Include(l => l.Book).Include(l => l.User).FirstOrDefaultAsync(l => l.Id.Equals(id));
             if (loan != null)
                 return (loan, "Loan has been successfully obtained.", HttpStatusCode.OK);
             else

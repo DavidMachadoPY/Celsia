@@ -2,21 +2,20 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ServeBooks.App.Interfaces;
 
-namespace ServeBooks.Controllers.Users
+namespace ServeBooks.Controllers.Books
 {
     /*[ApiController]
     [Route("api/[controller]")]*/
-    [Authorize(Roles = "Admin")]
-    public class UsersController : ControllerBase
+    public class BooksController : ControllerBase
     {
-        private readonly IUsersRepository _repository;
-        public UsersController(IUsersRepository repository)
+        private readonly IBooksRepository _repository;
+        public BooksController(IBooksRepository repository)
         {
             _repository = repository;
         }
 
         [HttpGet]
-        [Route("api/users")]
+        [Route("api/books")]
          public async Task<IActionResult> GetAll()
         {
             try
@@ -34,12 +33,36 @@ namespace ServeBooks.Controllers.Users
             }
             catch(Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, $"Error obtaining users: {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Error obtaining books: {ex.Message}");
             }
         }
 
         [HttpGet]
-        [Route("api/users/{id}")]
+        [Route("api/books/deleted")]
+        [Authorize(Roles = "Admin")]
+         public async Task<IActionResult> GetAllDeleted()
+        {
+            try
+            {
+                var (result,message,statusCode) = await _repository.GetAllDeleted();
+                if(result == null)
+                {
+                    return NotFound(message);
+                }
+                return Ok(new {
+                    Message = message,
+                    StatusCode = statusCode,
+                    Data = result
+                });
+            }
+            catch(Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Error obtaining books: {ex.Message}");
+            }
+        }
+
+        [HttpGet]
+        [Route("api/books/{id}")]
         public async Task<IActionResult> GetById(int id)
         {
             try
@@ -57,7 +80,7 @@ namespace ServeBooks.Controllers.Users
             }
             catch(Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, $"Error obtaining user with Id: {id}: {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Error obtaining book with Id: {id}: {ex.Message}");
             }
         }
     }
