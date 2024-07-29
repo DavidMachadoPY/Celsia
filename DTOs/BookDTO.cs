@@ -1,10 +1,7 @@
-using System.Text.Json.Serialization;
-
-namespace ServeBooks.Models
+namespace ServeBooks.DTOs
 {
-    public class Book
+    public class BookDTO
     {
-        public int Id { get; set; }
         public string? Title { get; set; }
         public string? Author { get; set; }
         public string? Gender { get; set; }
@@ -12,7 +9,5 @@ namespace ServeBooks.Models
         public int NumberOfCopies { get; set; }
         public int AvailableCopies { get; set; }
         public string? Status { get; set; }
-        [JsonIgnore]
-        public ICollection<Loan>? Loans { get; set; }
     }
 }

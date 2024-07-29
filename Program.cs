@@ -6,6 +6,9 @@ using Microsoft.IdentityModel.Tokens;
 using ServeBooks.App.Interfaces;
 using ServeBooks.App.Services;
 using ServeBooks.Data;
+using System.Reflection;
+using ServeBooks.App.Extensions;
+using ServeBooks.App.Utils;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -67,7 +70,11 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddAuthorization();
 
+// Services configuration
+builder.Services.AddServices(Assembly.GetExecutingAssembly());
 
+// AutoMapper configuration
+builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 // Configure DI
 
