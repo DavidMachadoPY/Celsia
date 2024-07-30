@@ -18,7 +18,7 @@ namespace ServeBooks.App.Utils.Email
                 // Construir el mensaje de correo electrónico
                 var emailMessage = new
                 {
-                    from = new { email = "NanoDrive@trial-3vz9dlew96nlkj50.mlsender.net", name = "🙉 - Save Book" },
+                    from = new { email = "ServeBook@trial-3vz9dlew96nlkj50.mlsender.net", name = "🙉 - Save Book" },
                     to = new List<object>
                     {
                         new { email = emailUser, name = "Recipient Name" }
