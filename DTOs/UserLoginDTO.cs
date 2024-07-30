@@ -1,4 +1,4 @@
-namespace ServeBooks.Dtos
+namespace ServeBooks.DTOs
 {
     public class UserLoginDTO
     {

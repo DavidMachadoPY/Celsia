@@ -1,3 +1,5 @@
+using ServeBooks.Models;
+
 namespace ServeBooks.DTOs
 {
     public class LoanCreateDTO
@@ -6,5 +8,7 @@ namespace ServeBooks.DTOs
         public int BookId { get; set; }
         public DateTime LoanDate { get; set; } = DateTime.Now;
         public DateTime ReturnDate { get; set; } = DateTime.Now;
+
+        public Book? Book { get; set; }
     }
 }

@@ -26,13 +26,20 @@ namespace ServeBooks.App.Services
             newLoan.Status = "Pending";
             await _context.Loans.AddAsync(newLoan);
             await _context.SaveChangesAsync();
+            var book = await _context.Books.FirstOrDefaultAsync(b => b.Id == newLoan.BookId);
+            if (book != null)
+            {
+                book.Status = "Reserved";
+                _context.Entry(book).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+            }
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == newLoan.UserID);
             string textSubject = $"Hellow from ServeBooks {user!.Name}, your loan its pending to be approved";
             string textBody = $"Hello {user!.Name}!\n\n" +
                               $"we have received your request to borrow the book, the request will be verified by a manager.";
 
             var sendEmail = new MailersendUtils();
-            await sendEmail.EnviarCorreo(user.Email!, textSubject, textBody);
+            await sendEmail.EnviarCorreo(/*user.Email!*/"avidmachado@gmail.com", textSubject, textBody);
 
             return (newLoan, "Loan has been successfully created.", HttpStatusCode.Created);
         }

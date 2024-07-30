@@ -30,7 +30,9 @@ namespace ServeBooks.Models
 
         [Required(ErrorMessage = "Status is required.")]
         public string? Status { get; set; }
-        //[JsonIgnore]
+        [JsonIgnore]
         public ICollection<Loan>? Loans { get; set; }
+        [JsonIgnore]
+        public ICollection<LoanCreateDTO>? LoansCreated { get; set; }
     }
 }

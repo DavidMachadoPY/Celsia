@@ -2,7 +2,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ServeBooks.App.Interfaces.Auth;
-using ServeBooks.Dtos;
+using ServeBooks.DTOs;
 
 namespace ServeBooks.Controllers.Auth
 {
