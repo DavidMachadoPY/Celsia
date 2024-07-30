@@ -1,5 +1,9 @@
 using System.ComponentModel.DataAnnotations;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text.Json.Serialization;
+using System.Threading.Tasks;
 
 namespace ServeBooks.Models
 {
@@ -19,6 +23,9 @@ namespace ServeBooks.Models
         
         [Required (ErrorMessage = "RegistrationDate is Required")]
         public DateTime? RegistrationDate { get; set; }
+      
+        public string? Role { get; set; }
+      
         [JsonIgnore]
         public ICollection<Loan>? Loans { get; set; }
     }
