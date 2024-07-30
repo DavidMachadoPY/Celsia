@@ -14,5 +14,7 @@ namespace ServeBooks.App.Interfaces
         Task<(IEnumerable<Book> books, string message, HttpStatusCode statusCode)> GetAll();
         Task<(IEnumerable<Book> books, string message, HttpStatusCode statusCode)> GetAllAvailable();
         Task<(Book book, string message, HttpStatusCode statusCode)> GetById(int id);
+        Task<(IEnumerable<BookStatusDTO> books, string message, HttpStatusCode statusCode)> Getavailable();
+
     }
 }

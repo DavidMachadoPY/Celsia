@@ -10,4 +10,5 @@ namespace ServeBooks.DTOs
         public int AvailableCopies { get; set; }
         public string? Status { get; set; }
     }
+
 }
