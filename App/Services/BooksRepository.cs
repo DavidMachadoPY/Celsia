@@ -1,8 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using ServeBooks.App.Interfaces;
@@ -47,7 +43,7 @@ namespace ServeBooks.App.Services
 
         public async Task<(IEnumerable<Book> books, string message, HttpStatusCode statusCode)> GetAll()
         {
-            var books = await _context.Books.Include(b => b.Loans).Where(f => f.Status!.ToLower() == "active").ToListAsync();
+            var books = await _context.Books.Include(b => b.Loans).Where(f => f.Status!.ToLower() == "available").ToListAsync();
             if (books.Any())
                 return (books, "Books have been successfully obtained.", HttpStatusCode.OK);
             else
@@ -56,7 +52,7 @@ namespace ServeBooks.App.Services
 
         public async Task<(IEnumerable<Book> books, string message, HttpStatusCode statusCode)> GetAllDeleted()
         {
-            var books = await _context.Books.Include(b => b.Loans).Where(f => f.Status!.ToLower() == "inactive").ToListAsync();
+            var books = await _context.Books.Include(b => b.Loans).Where(b => b.Status!.ToLower() == "inactive").ToListAsync();
             if (books.Any())
                 return (books, "Deleted books have been successfully obtained.", HttpStatusCode.OK);
             else
@@ -65,7 +61,7 @@ namespace ServeBooks.App.Services
 
         public async Task<(Book book, string message, HttpStatusCode statusCode)> GetById(int id)
         {
-            var book = await _context.Books.Include(b=> b.Loans).FirstOrDefaultAsync(f => f.Id.Equals(id));
+            var book = await _context.Books.Include(b=> b.Loans).FirstOrDefaultAsync(b => b.Id.Equals(id));
             if (book != null)
                 return (book, "Book has been successfully obtained.", HttpStatusCode.OK);
             else
@@ -77,13 +73,13 @@ namespace ServeBooks.App.Services
             var book = await _context.Books.FindAsync(id);
             if (book != null)
             {
-                if (book.Status == "active")
+                if (book.Status == "available")
                 {
-                    return (book, $"The Book with Id: {id} is already active.", HttpStatusCode.NotFound);
+                    return (book, $"The Book with Id: {id} is already available.", HttpStatusCode.NotFound);
                 }
                 else
                 {
-                    book.Status = "active";
+                    book.Status = "available";
                     _context.Entry(book).State = EntityState.Modified;
                     await _context.SaveChangesAsync();
                     return (book, "The book has been restored correctly.", HttpStatusCode.OK);

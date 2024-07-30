@@ -41,7 +41,7 @@ namespace ServeBooks.App.Services
             //Fill the DataTable with the data
             foreach (var register in registers)
             {
-                table.Rows.Add(register.User.Name, register.Book.Title, register.LoanDate, register.ReturnDate);
+                table.Rows.Add(register.User!.Name, register.Book!.Title, register.LoanDate, register.ReturnDate);
             }
 
             //Create a new Excel workbook and add the DataTable to it

@@ -9,7 +9,6 @@ namespace ServeBooks.App.Interfaces.Auth
         Task<(User user, string message, HttpStatusCode statusCode)> RegisterUser(string name, string email, string password);
 
         // Registers a new admin user with the provided details
-
         Task<(User user, string message, HttpStatusCode statusCode)> RegisterAdmin(string name, string email, string password);
 
         // Authenticates a user with the provided credentials

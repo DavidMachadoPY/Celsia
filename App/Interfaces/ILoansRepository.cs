@@ -2,7 +2,7 @@ using System.Net;
 using ServeBooks.DTOs;
 using ServeBooks.Models;
 
-namespace ServeLoans.App.Interfaces
+namespace ServeBooks.App.Interfaces
 {
     public interface ILoansRepository
     {
