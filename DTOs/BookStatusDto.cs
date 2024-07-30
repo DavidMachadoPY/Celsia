@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace ServeBooks.DTOs
 {
-    public class BookStatusDto
+    public class BookStatusDTO
     {
          public string? Title { get; set; }
          public string? Status { get; set; }

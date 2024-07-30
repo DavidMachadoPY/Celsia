@@ -83,5 +83,28 @@ namespace ServeBooks.Controllers.Books
                 return StatusCode(StatusCodes.Status500InternalServerError, $"Error obtaining book with Id: {id}: {ex.Message}");
             }
         }
+        
+        [HttpGet]
+        [Route("api/books/available")]
+         public async Task<IActionResult> Getavailable()
+        {
+            try
+            {
+                var (result,message,statusCode) = await _repository.Getavailable();
+                if(result == null)
+                {
+                    return NotFound(message);
+                }
+                return Ok(new {
+                    Message = message,
+                    StatusCode = statusCode,
+                    Data = result
+                });
+            }
+            catch(Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Error obtaining books: {ex.Message}");
+            }
+        }
     }
 }

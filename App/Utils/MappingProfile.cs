@@ -10,6 +10,9 @@ namespace ServeBooks.App.Utils
         {
             CreateMap<BookDTO, Book>();
             CreateMap<Book, BookDTO>().ReverseMap();
+            
+            CreateMap<BookStatusDTO, Book>(); 
+            CreateMap<Book, BookStatusDTO>().ReverseMap();
 
             CreateMap<UserDTO, User>();
             CreateMap<User, UserDTO>().ReverseMap();

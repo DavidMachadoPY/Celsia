@@ -112,17 +112,19 @@ namespace ServeBooks.App.Services
 
          //Usuarios pueden consultar disponibilidad de libros y fechas de vencimiento de préstamos. Proveer información precisa y actualizada.
 
-      public async Task<(IEnumerable<Book> books, string message, HttpStatusCode statusCode)> Getavailable()
+      public async Task<(IEnumerable<BookStatusDTO> books, string message, HttpStatusCode statusCode)> Getavailable()
         {
 
-            var books = await _context.Books.Include(l => l.Loans).Where(f => f.Status!.ToLower() == "available").ToListAsync();
+            var books= await _context.Books.Include(l => l.Loans).Where(f => f.Status!.ToLower() ==   "available" ||  f.Status!.ToLower() ==   "checkedout").ToListAsync();
+            var mapper = _mapper.Map<IEnumerable<BookStatusDTO>>(books);
+
             if (books.Any())
-                return (books, "Books have been successfully obtained.", HttpStatusCode.OK);
+                return (mapper, "Books have been successfully obtained.", HttpStatusCode.OK);
 
 
             else
-                return (Enumerable.Empty<Book>(), "No books found in the database.", HttpStatusCode.NotFound);
-        }    
+                return (Enumerable.Empty<BookStatusDTO>(), "No books found in the database.", HttpStatusCode.NotFound);
+        }
 
     }
 }
