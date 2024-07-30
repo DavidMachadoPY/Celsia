@@ -10,7 +10,7 @@ namespace ServeBooks.App.Services
 {
     public class BooksRepository : IBooksRepository
     {
-        
+
         private readonly ServeBooksContext _context;
         private readonly IMapper _mapper;
         public BooksRepository(ServeBooksContext context, IMapper mapper)
@@ -30,7 +30,7 @@ namespace ServeBooks.App.Services
         public async Task<(Book book, string message, HttpStatusCode statusCode)> Update(int id, BookDTO book)
         {
             var bookUpdate = await _context.Books.FindAsync(id);
-            if (bookUpdate!= null)
+            if (bookUpdate != null)
             {
                 _mapper.Map(book, bookUpdate);
                 _context.Entry(bookUpdate).State = EntityState.Modified;
@@ -122,18 +122,16 @@ namespace ServeBooks.App.Services
 
         }
 
-         //Usuarios pueden consultar disponibilidad de libros y fechas de vencimiento de préstamos. Proveer información precisa y actualizada.
+        //Usuarios pueden consultar disponibilidad de libros y fechas de vencimiento de préstamos. Proveer información precisa y actualizada.
 
-      public async Task<(IEnumerable<BookStatusDTO> books, string message, HttpStatusCode statusCode)> Getavailable()
+        public async Task<(IEnumerable<BookStatusDTO> books, string message, HttpStatusCode statusCode)> Getavailable()
         {
 
-            var books= await _context.Books.Include(l => l.Loans).Where(f => f.Status!.ToLower() ==   "available" ||  f.Status!.ToLower() ==   "checkedout").ToListAsync();
+            var books = await _context.Books.Include(l => l.Loans).Where(f => f.Status!.ToLower() == "available" || f.Status!.ToLower() == "checkedout").ToListAsync();
             var mapper = _mapper.Map<IEnumerable<BookStatusDTO>>(books);
 
             if (books.Any())
                 return (mapper, "Books have been successfully obtained.", HttpStatusCode.OK);
-
-
             else
                 return (Enumerable.Empty<BookStatusDTO>(), "No books found in the database.", HttpStatusCode.NotFound);
         }
