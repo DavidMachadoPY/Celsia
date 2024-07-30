@@ -32,7 +32,5 @@ namespace ServeBooks.Models
         public string? Status { get; set; }
         [JsonIgnore]
         public ICollection<Loan>? Loans { get; set; }
-        [JsonIgnore]
-        public ICollection<LoanCreateDTO>? LoansCreated { get; set; }
     }
 }
