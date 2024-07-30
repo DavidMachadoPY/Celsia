@@ -17,7 +17,7 @@ namespace ServeBooks.Controllers.Auth
         }
 
         [AllowAnonymous]
-        [HttpPost("users")]
+        [HttpPost("api/users")]
         public async Task<ActionResult> RegisterUsers([FromBody] UserRegisterDTO model)
         {
             // Check that the name, email, and password are not empty
@@ -47,7 +47,7 @@ namespace ServeBooks.Controllers.Auth
         }
 
         [Authorize(Roles = "Admin")]
-        [HttpPost("admins")]
+        [HttpPost("api/admins")]
         public async Task<ActionResult> RegisterAdmin([FromBody] UserRegisterDTO model)
         {
             // Check that the name, email, and password are not empty
@@ -77,7 +77,7 @@ namespace ServeBooks.Controllers.Auth
         }
 
         [AllowAnonymous]
-        [HttpPost("users/login")]
+        [HttpPost("api/users/login")]
         public async Task<ActionResult> LoginRequest([FromBody] UserLoginDTO model)
         {
             // Check that the email and password are not empty

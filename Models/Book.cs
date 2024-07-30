@@ -18,7 +18,7 @@ namespace ServeBooks.Models
         public string? Gender { get; set; }
 
         [Required(ErrorMessage = "Publication date is required.")]
-        public DateOnly? PublicationDate { get; set; }
+        public DateTime? PublicationDate { get; set; }
 
         [Required(ErrorMessage = "Number of copies is required.")]
         public int NumberOfCopies { get; set; }

@@ -43,7 +43,7 @@ namespace ServeBooks.App.Services
 
         public async Task<(IEnumerable<Loan> loans, string message, HttpStatusCode statusCode)> GetAll()
         {
-            var loans = await _context.Loans.Include(l => l.Book).Include(l => l.User).Include(l => l.User).Where(l => l.Status!.ToLower() == "active").ToListAsync();
+            var loans = await _context.Loans.Include(l => l.Book).Include(l => l.User).Include(l => l.User).Where(l => l.Status!.ToLower() == "available").ToListAsync();
             if (loans.Any())
                 return (loans, "Loans have been successfully obtained.", HttpStatusCode.OK);
             else
@@ -73,13 +73,13 @@ namespace ServeBooks.App.Services
             var loan = await _context.Loans.FindAsync(id);
             if (loan != null)
             {
-                if (loan.Status == "active")
+                if (loan.Status == "available")
                 {
-                    return (loan, $"The Loan with Id: {id} is already active.", HttpStatusCode.NotFound);
+                    return (loan, $"The Loan with Id: {id} is already available.", HttpStatusCode.NotFound);
                 }
                 else
                 {
-                    loan.Status = "active";
+                    loan.Status = "available";
                     _context.Entry(loan).State = EntityState.Modified;
                     await _context.SaveChangesAsync();
                     return (loan, "The loan has been restored correctly.", HttpStatusCode.OK);
