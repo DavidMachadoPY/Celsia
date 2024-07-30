@@ -23,6 +23,7 @@ namespace ServeBooks.App.Services
             var userUpdate = await _context.Users.FindAsync(id);
             if (userUpdate!= null)
             {
+                user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
                 _mapper.Map(user, userUpdate);
                 _context.Entry(userUpdate).State = EntityState.Modified;
                 await _context.SaveChangesAsync();

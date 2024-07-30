@@ -22,6 +22,9 @@ namespace ServeBooks.App.Utils
 
             CreateMap<LoanGetDTO, Loan>(); 
             CreateMap<Loan, LoanGetDTO>().ReverseMap();
+
+            CreateMap<LoanCreateDTO, Loan>(); 
+            CreateMap<Loan, LoanCreateDTO>().ReverseMap();
         }
     }
 }

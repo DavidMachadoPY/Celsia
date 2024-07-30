@@ -5,6 +5,7 @@ using ServeBooks.DTOs;
 using ServeBooks.Models;
 using ServeBooks.App.Interfaces;
 using ServeBooks.Data;
+using ServeBooks.App.Utils.Email;
 
 namespace ServeBooks.App.Services
 {
@@ -19,11 +20,20 @@ namespace ServeBooks.App.Services
             _mapper = mapper;
         }
 
-        public async Task<(Loan loan, string message, HttpStatusCode statusCode)> Add(LoanDTO loan)
+        public async Task<(Loan loan, string message, HttpStatusCode statusCode)> Add(LoanCreateDTO loan)
         {
             var newLoan = _mapper.Map<Loan>(loan);
+            newLoan.Status = "Pending";
             await _context.Loans.AddAsync(newLoan);
             await _context.SaveChangesAsync();
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == newLoan.UserID);
+            string textSubject = $"Hellow from ServeBooks {user!.Name}, your loan its pending to be approved";
+            string textBody = $"Hello {user!.Name}!\n\n" +
+                              $"we have received your request to borrow the book, the request will be verified by a manager.";
+
+            var sendEmail = new MailersendUtils();
+            await sendEmail.EnviarCorreo(user.Email!, textSubject, textBody);
+
             return (newLoan, "Loan has been successfully created.", HttpStatusCode.Created);
         }
 
@@ -56,6 +66,48 @@ namespace ServeBooks.App.Services
             var loan = await _context.Loans.Include(l => l.Book).Include(l => l.User).Where(l => l.UserID == l.User!.Id).FirstOrDefaultAsync(l => l.Id.Equals(id));
             if (loan != null)
                 return (loan, "Loan has been successfully obtained.", HttpStatusCode.OK);
+            else
+                return (default(Loan)!, $"No loan found in the database with Id: {id}.", HttpStatusCode.NotFound);
+        }
+
+        public async Task<(Loan loan, string message, HttpStatusCode statusCode)> ApproveLoan(int id)
+        {
+            var loan = await _context.Loans.FindAsync(id);
+            if (loan != null)
+            {
+                if (loan.Status == "Approved")
+                {
+                    return (loan, $"The Loan with Id: {id} is already approved.", HttpStatusCode.NotFound);
+                }
+                else
+                {
+                    loan.Status = "Approved";
+                    _context.Entry(loan).State = EntityState.Modified;
+                    await _context.SaveChangesAsync();
+                    return (loan, "The loan has been approved correctly.", HttpStatusCode.OK);
+                }
+            }
+            else
+                return (default(Loan)!, $"No loan found in the database with Id: {id}.", HttpStatusCode.NotFound);
+        }
+
+        public async Task<(Loan loan, string message, HttpStatusCode statusCode)> RejectLoan(int id)
+        {
+            var loan = await _context.Loans.FindAsync(id);
+            if (loan != null)
+            {
+                if (loan.Status == "Rejected")
+                {
+                    return (loan, $"The Loan with Id: {id} is already rejected.", HttpStatusCode.NotFound);
+                }
+                else
+                {
+                    loan.Status = "Rejected";
+                    _context.Entry(loan).State = EntityState.Modified;
+                    await _context.SaveChangesAsync();
+                    return (loan, "The loan has been rejected correctly.", HttpStatusCode.OK);
+                }
+            }
             else
                 return (default(Loan)!, $"No loan found in the database with Id: {id}.", HttpStatusCode.NotFound);
         }

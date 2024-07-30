@@ -58,5 +58,77 @@ namespace ServeBooks.Controllers.Loans
                 });
             }
         }
+
+        [HttpPut]
+        [Route("api/loans/{id}/approve")]
+        public async Task<IActionResult> ApproveLoan(int id)
+        {
+            try
+            {
+                var (result, message, statusCode) = await _repository.ApproveLoan(id);
+                if (statusCode == HttpStatusCode.OK)
+                {
+                    return Ok(new
+                    {
+                        Message = message,
+                        Data = result
+                    });
+                }
+                else if (statusCode == HttpStatusCode.NotFound)
+                {
+                    return NotFound(new
+                    {
+                        Message = message
+                    });
+                }
+                return StatusCode((int)statusCode, new
+                {
+                    Message = message
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new
+                {
+                    Message = $"Error approving loan: {ex.Message}"
+                });
+            }
+        }
+
+        [HttpPut]
+        [Route("api/loans/{id}/reject")]
+        public async Task<IActionResult> RejectLoan(int id)
+        {
+            try
+            {
+                var (result, message, statusCode) = await _repository.RejectLoan(id);
+                if (statusCode == HttpStatusCode.OK)
+                {
+                    return Ok(new
+                    {
+                        Message = message,
+                        Data = result
+                    });
+                }
+                else if (statusCode == HttpStatusCode.NotFound)
+                {
+                    return NotFound(new
+                    {
+                        Message = message
+                    });
+                }
+                return StatusCode((int)statusCode, new
+                {
+                    Message = message
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new
+                {
+                    Message = $"Error rejecting loan: {ex.Message}"
+                });
+            }
+        }
     }
 }

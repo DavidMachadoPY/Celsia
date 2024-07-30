@@ -18,7 +18,7 @@ namespace ServeBooks.Controllers.Loans
 
         [HttpPost]
         [Route("api/loans")]
-        public async Task<IActionResult> Create([FromBody] LoanDTO loanDto)
+        public async Task<IActionResult> Create([FromBody]LoanCreateDTO loanDto)
         {
             if (!ModelState.IsValid)
             {
