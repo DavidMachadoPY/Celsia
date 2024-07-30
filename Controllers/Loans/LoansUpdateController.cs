@@ -17,7 +17,7 @@ namespace ServeBooks.Controllers.Loans
             _repository = repository;
         }
 
-        [HttpPut]
+        [HttpGet]
         [Route("api/loans/{id}")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Update(int id, [FromBody] LoanDTO loanDto)
@@ -59,7 +59,7 @@ namespace ServeBooks.Controllers.Loans
             }
         }
 
-        [HttpPut]
+        [HttpGet]
         [Route("api/loans/{id}/approve")]
         public async Task<IActionResult> ApproveLoan(int id)
         {
