@@ -11,7 +11,7 @@ namespace ServeBooks.App.Services
 {
     public class LoansRepository : ILoansRepository
     {
-        
+
         private readonly ServeBooksContext _context;
         private readonly IMapper _mapper;
         public LoansRepository(ServeBooksContext context, IMapper mapper)
@@ -36,7 +36,11 @@ namespace ServeBooks.App.Services
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == newLoan.UserID);
             string textSubject = $"Hellow from ServeBooks {user!.Name}, your loan its pending to be approved";
             string textBody = $"Hello {user!.Name}!\n\n" +
-                              $"we have received your request to borrow the book, the request will be verified by a manager.";
+                              $"we have received your request to borrow the book, the request will be verified by a manager.\n\n"+
+                              $"Aprovar: http://localhost:5119/api/loans/{newLoan.Id}/approve \n\n"+
+                              $"Rechazar: http://localhost:5119/api/loans/{newLoan.Id}/reject";
+                              
+                              
 
             var sendEmail = new MailersendUtils();
             await sendEmail.EnviarCorreo(/*user.Email!*/"avidmachado@gmail.com", textSubject, textBody);
@@ -47,7 +51,7 @@ namespace ServeBooks.App.Services
         public async Task<(Loan loan, string message, HttpStatusCode statusCode)> Update(int id, LoanDTO loan)
         {
             var loanUpdate = await _context.Loans.FindAsync(id);
-            if (loanUpdate!= null)
+            if (loanUpdate != null)
             {
                 _mapper.Map(loan, loanUpdate);
                 _context.Entry(loanUpdate).State = EntityState.Modified;
@@ -79,7 +83,7 @@ namespace ServeBooks.App.Services
 
         public async Task<(Loan loan, string message, HttpStatusCode statusCode)> ApproveLoan(int id)
         {
-            var loan = await _context.Loans.FindAsync(id);
+            var loan = await _context.Loans.Include(l => l.User).FirstOrDefaultAsync(l => l.Id == id);
             if (loan != null)
             {
                 if (loan.Status == "Approved")
@@ -91,6 +95,13 @@ namespace ServeBooks.App.Services
                     loan.Status = "Approved";
                     _context.Entry(loan).State = EntityState.Modified;
                     await _context.SaveChangesAsync();
+                    var book = await _context.Books.FirstOrDefaultAsync(b => b.Id == loan.BookId);
+                    if (book != null)
+                    {
+                        book.Status = "CheckedOut";
+                        _context.Entry(book).State = EntityState.Modified;
+                        await _context.SaveChangesAsync();
+                    }
                     return (loan, "The loan has been approved correctly.", HttpStatusCode.OK);
                 }
             }
@@ -100,7 +111,7 @@ namespace ServeBooks.App.Services
 
         public async Task<(Loan loan, string message, HttpStatusCode statusCode)> RejectLoan(int id)
         {
-            var loan = await _context.Loans.FindAsync(id);
+            var loan = await _context.Loans.Include(l => l.User).FirstOrDefaultAsync(l => l.Id == id);
             if (loan != null)
             {
                 if (loan.Status == "Rejected")
@@ -112,6 +123,13 @@ namespace ServeBooks.App.Services
                     loan.Status = "Rejected";
                     _context.Entry(loan).State = EntityState.Modified;
                     await _context.SaveChangesAsync();
+                    var book = await _context.Books.FirstOrDefaultAsync(b => b.Id == loan.BookId);
+                    if (book != null)
+                    {
+                        book.Status = "Available";
+                        _context.Entry(book).State = EntityState.Modified;
+                        await _context.SaveChangesAsync();
+                    }
                     return (loan, "The loan has been rejected correctly.", HttpStatusCode.OK);
                 }
             }
