@@ -50,13 +50,18 @@ namespace ServeBooks.App.Services
                 return (Enumerable.Empty<Book>(), "No books found in the database.", HttpStatusCode.NotFound);
         }
 
-        public async Task<(IEnumerable<Book> books, string message, HttpStatusCode statusCode)> GetAllAvailable()
+        public async Task<(IEnumerable<BookGetDTO> books, string message, HttpStatusCode statusCode)> GetAllAvailable()
         {
             var books = await _context.Books.Include(b => b.Loans).Where(b => b.Status!.ToLower() == "available").ToListAsync();
             if (books.Any())
-                return (books, "Books have been successfully obtained.", HttpStatusCode.OK);
+            {
+                var booksDTO = _mapper.Map<List<BookGetDTO>>(books);
+                return (booksDTO, "Books have been successfully obtained.", HttpStatusCode.OK);
+            }
             else
-                return (Enumerable.Empty<Book>(), "No books found in the database.", HttpStatusCode.NotFound);
+            {
+                return (Enumerable.Empty<BookGetDTO>(), "No books found in the database.", HttpStatusCode.NotFound);
+            }
         }
 
         public async Task<(IEnumerable<Book> books, string message, HttpStatusCode statusCode)> GetAllDeleted()
@@ -121,20 +126,5 @@ namespace ServeBooks.App.Services
                 return (default(Book)!, $"No book found in the database with Id: {id}.", HttpStatusCode.NotFound);
 
         }
-
-        //Usuarios pueden consultar disponibilidad de libros y fechas de vencimiento de préstamos. Proveer información precisa y actualizada.
-
-        public async Task<(IEnumerable<BookStatusDTO> books, string message, HttpStatusCode statusCode)> Getavailable()
-        {
-
-            var books = await _context.Books.Include(l => l.Loans).Where(f => f.Status!.ToLower() == "available" || f.Status!.ToLower() == "checkedout").ToListAsync();
-            var mapper = _mapper.Map<IEnumerable<BookStatusDTO>>(books);
-
-            if (books.Any())
-                return (mapper, "Books have been successfully obtained.", HttpStatusCode.OK);
-            else
-                return (Enumerable.Empty<BookStatusDTO>(), "No books found in the database.", HttpStatusCode.NotFound);
-        }
-
     }
 }

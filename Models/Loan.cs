@@ -1,9 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
 namespace ServeBooks.Models
 {
@@ -24,9 +19,7 @@ namespace ServeBooks.Models
         
         [Required(ErrorMessage = "Status is required.")]
         public string? Status { get; set; }
-        [JsonIgnore]
         public User? User { get; set; }
-        [JsonIgnore]
         public Book? Book { get; set; }
     }
 }

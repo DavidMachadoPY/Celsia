@@ -17,6 +17,7 @@ namespace ServeBooks.Controllers.Books
 
         [HttpGet]
         [Route("api/books")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetAll()
         {
             try
@@ -29,7 +30,7 @@ namespace ServeBooks.Controllers.Books
                 return Ok(new
                 {
                     Message = message,
-                    StatusCode = statusCode,
+                    StatusCode = $"200 {statusCode}",
                     Data = result
                 });
             }
@@ -110,29 +111,6 @@ namespace ServeBooks.Controllers.Books
             catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, $"Error obtaining book with Id: {id}: {ex.Message}");
-            }
-        }
-        
-        [HttpGet]
-        [Route("api/books/available")]
-         public async Task<IActionResult> Getavailable()
-        {
-            try
-            {
-                var (result,message,statusCode) = await _repository.Getavailable();
-                if(result == null)
-                {
-                    return NotFound(message);
-                }
-                return Ok(new {
-                    Message = message,
-                    StatusCode = statusCode,
-                    Data = result
-                });
-            }
-            catch(Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, $"Error obtaining books: {ex.Message}");
             }
         }
     }

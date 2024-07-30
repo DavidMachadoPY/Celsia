@@ -11,14 +11,17 @@ namespace ServeBooks.App.Utils
             CreateMap<BookDTO, Book>();
             CreateMap<Book, BookDTO>().ReverseMap();
             
-            CreateMap<BookStatusDTO, Book>(); 
-            CreateMap<Book, BookStatusDTO>().ReverseMap();
+            CreateMap<BookGetDTO, Book>(); 
+            CreateMap<Book, BookGetDTO>().ReverseMap();
 
             CreateMap<UserDTO, User>();
             CreateMap<User, UserDTO>().ReverseMap();
 
             CreateMap<LoanDTO, Loan>();
             CreateMap<Loan, LoanDTO>().ReverseMap();
+
+            CreateMap<LoanGetDTO, Loan>(); 
+            CreateMap<Loan, LoanGetDTO>().ReverseMap();
         }
     }
 }

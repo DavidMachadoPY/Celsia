@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
+using ServeBooks.DTOs;
 
 namespace ServeBooks.Models
 {
@@ -29,7 +30,7 @@ namespace ServeBooks.Models
 
         [Required(ErrorMessage = "Status is required.")]
         public string? Status { get; set; }
-        [JsonIgnore]
+        //[JsonIgnore]
         public ICollection<Loan>? Loans { get; set; }
     }
 }

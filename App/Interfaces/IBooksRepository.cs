@@ -12,9 +12,7 @@ namespace ServeBooks.App.Interfaces
         Task<(Book book, string message, HttpStatusCode statusCode)> Restore(int id);
         Task<(IEnumerable<Book> books, string message, HttpStatusCode statusCode)> GetAllDeleted();
         Task<(IEnumerable<Book> books, string message, HttpStatusCode statusCode)> GetAll();
-        Task<(IEnumerable<Book> books, string message, HttpStatusCode statusCode)> GetAllAvailable();
+        Task<(IEnumerable<BookGetDTO> books, string message, HttpStatusCode statusCode)> GetAllAvailable();
         Task<(Book book, string message, HttpStatusCode statusCode)> GetById(int id);
-        Task<(IEnumerable<BookStatusDTO> books, string message, HttpStatusCode statusCode)> Getavailable();
-
     }
 }
