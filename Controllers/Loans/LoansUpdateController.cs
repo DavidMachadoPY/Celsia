@@ -9,7 +9,6 @@ namespace ServeBooks.Controllers.Loans
 {
     /*[ApiController]
     [Route("api/[controller]")]*/
-    [Authorize(Roles = "Admin")]
     public class LoansUpdateController : ControllerBase
     {
         private readonly ILoansRepository _repository;
@@ -20,6 +19,7 @@ namespace ServeBooks.Controllers.Loans
 
         [HttpPut]
         [Route("api/loans/{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Update(int id, [FromBody] LoanDTO loanDto)
         {
             if (!ModelState.IsValid)
