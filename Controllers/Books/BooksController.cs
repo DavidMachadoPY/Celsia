@@ -40,6 +40,30 @@ namespace ServeBooks.Controllers.Books
         }
 
         [HttpGet]
+        [Route("api/books/available")]
+        public async Task<IActionResult> GetAllAvailable()
+        {
+            try
+            {
+                var (result, message, statusCode) = await _repository.GetAllAvailable();
+                if (result == null)
+                {
+                    return NotFound(message);
+                }
+                return Ok(new
+                {
+                    Message = message,
+                    StatusCode = statusCode,
+                    Data = result
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Error obtaining books: {ex.Message}");
+            }
+        }
+
+        [HttpGet]
         [Route("api/books/deleted")]
         [Authorize(Roles = "Admin")]    
         public async Task<IActionResult> GetAllDeleted()

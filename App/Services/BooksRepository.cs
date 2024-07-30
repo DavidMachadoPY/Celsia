@@ -43,6 +43,15 @@ namespace ServeBooks.App.Services
 
         public async Task<(IEnumerable<Book> books, string message, HttpStatusCode statusCode)> GetAll()
         {
+            var books = await _context.Books.Include(b => b.Loans).ToListAsync();
+            if (books.Any())
+                return (books, "Books have been successfully obtained.", HttpStatusCode.OK);
+            else
+                return (Enumerable.Empty<Book>(), "No books found in the database.", HttpStatusCode.NotFound);
+        }
+
+        public async Task<(IEnumerable<Book> books, string message, HttpStatusCode statusCode)> GetAllAvailable()
+        {
             var books = await _context.Books.Include(b => b.Loans).Where(b => b.Status!.ToLower() == "available").ToListAsync();
             if (books.Any())
                 return (books, "Books have been successfully obtained.", HttpStatusCode.OK);
