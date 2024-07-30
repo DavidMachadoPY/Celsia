@@ -5,7 +5,7 @@ using ServeBooks.DTOs;
 using System.Net;
 
 
-namespace ServeLoans.Controllers.Loans
+namespace ServeBooks.Controllers.Loans
 {
     /*[ApiController]
     [Route("api/[controller]")]*/
@@ -20,85 +20,42 @@ namespace ServeLoans.Controllers.Loans
 
         [HttpPut]
         [Route("api/loans/{id}")]
-        public async Task<IActionResult> Update(int id, [FromBody]LoanDTO loan)
+        public async Task<IActionResult> Update(int id, [FromBody] LoanDTO loanDto)
         {
-            if (loan == null)
+            if (!ModelState.IsValid)
             {
-                return BadRequest("The loan fields are invalid.");
+                return BadRequest("The Loans fields cannot be null or invalid.");
             }
-            
-            try
-            {
-                var (result, message, statusCode) = await _repository.Update(id, loan);
-                if(statusCode == HttpStatusCode.OK)
-                {
-                    return Ok(new {
-                        Message = message,
-                        Result = result
-                    });
-                }
-                else if (statusCode == HttpStatusCode.NotFound)
-                {
-                    return NotFound(message);
-                }
-                return StatusCode((int)statusCode, message);
-            
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, $"Error updating the owner: {ex.Message}");
-            }
-        }
 
-        [HttpPut]
-        [Route("api/loans/{id}/delete")]
-        public async Task<IActionResult> Delete(int id)
-        {
             try
             {
-                var (result, message, statusCode) = await _repository.Delete(id);
-                if(statusCode == HttpStatusCode.OK)
+                var (result, message, statusCode) = await _repository.Update(id, loanDto);
+                if (statusCode == HttpStatusCode.OK)
                 {
-                    return Ok(new {
+                    return Ok(new
+                    {
                         Message = message,
-                        Result = result
+                        Data = result
                     });
                 }
                 else if (statusCode == HttpStatusCode.NotFound)
                 {
-                    return NotFound(message);
-                }
-                return StatusCode((int)statusCode, message);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, $"Error deleting the loan: {ex.Message}");
-            }
-        }
-
-        [HttpPut]
-        [Route("api/loans/{id}/restore")]
-        public async Task<IActionResult> Restore(int id)
-        {
-            try
-            {
-                var (result, message, statusCode) = await _repository.Restore(id);
-                if(statusCode == HttpStatusCode.OK)
-                {
-                    return Ok(new {
-                        Message = message,
-                        Result = result
+                    return NotFound(new
+                    {
+                        Message = message
                     });
                 }
-                else if (statusCode == HttpStatusCode.NotFound)
+                return StatusCode((int)statusCode, new
                 {
-                    return NotFound(message);
-                }
-                return StatusCode((int)statusCode, message);
+                    Message = message
+                });
             }
             catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, $"Error restoring the loan: {ex.Message}");
+                return StatusCode(500, new
+                {
+                    Message = $"Error updating loan: {ex.Message}"
+                });
             }
         }
     }

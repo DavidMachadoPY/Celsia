@@ -38,29 +38,6 @@ namespace ServeBooks.Controllers.Loans
         }
 
         [HttpGet]
-        [Route("api/loans/deleted")]
-         public async Task<IActionResult> GetAllDeleted()
-        {
-            try
-            {
-                var (result,message,statusCode) = await _repository.GetAllDeleted();
-                if(result == null)
-                {
-                    return NotFound(message);
-                }
-                return Ok(new {
-                    Message = message,
-                    StatusCode = statusCode,
-                    Data = result
-                });
-            }
-            catch(Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, $"Error obtaining books: {ex.Message}");
-            }
-        }
-
-        [HttpGet]
         [Route("api/loans/{id}")]
         public async Task<IActionResult> GetById(int id)
         {

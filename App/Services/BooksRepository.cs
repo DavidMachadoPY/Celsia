@@ -1,10 +1,10 @@
+using Microsoft.EntityFrameworkCore;
 using System.Net;
 using AutoMapper;
-using Microsoft.EntityFrameworkCore;
-using ServeBooks.App.Interfaces;
-using ServeBooks.Data;
 using ServeBooks.DTOs;
 using ServeBooks.Models;
+using ServeBooks.App.Interfaces;
+using ServeBooks.Data;
 
 namespace ServeBooks.App.Services
 {
@@ -43,7 +43,7 @@ namespace ServeBooks.App.Services
 
         public async Task<(IEnumerable<Book> books, string message, HttpStatusCode statusCode)> GetAll()
         {
-            var books = await _context.Books.Include(b => b.Loans).Where(f => f.Status!.ToLower() == "available").ToListAsync();
+            var books = await _context.Books.Include(b => b.Loans).Where(b => b.Status!.ToLower() == "available").ToListAsync();
             if (books.Any())
                 return (books, "Books have been successfully obtained.", HttpStatusCode.OK);
             else
@@ -61,14 +61,14 @@ namespace ServeBooks.App.Services
 
         public async Task<(Book book, string message, HttpStatusCode statusCode)> GetById(int id)
         {
-            var book = await _context.Books.Include(b=> b.Loans).FirstOrDefaultAsync(b => b.Id.Equals(id));
+            var book = await _context.Books.Include(b => b.Loans).FirstOrDefaultAsync(b => b.Id.Equals(id));
             if (book != null)
                 return (book, "Book has been successfully obtained.", HttpStatusCode.OK);
             else
                 return (default(Book)!, $"No book found in the database with Id: {id}.", HttpStatusCode.NotFound);
         }
 
-        public async Task<(Book book, string message, HttpStatusCode statusCode)> Delete(int id)
+        public async Task<(Book book, string message, HttpStatusCode statusCode)> Restore(int id)
         {
             var book = await _context.Books.FindAsync(id);
             if (book != null)
@@ -89,10 +89,12 @@ namespace ServeBooks.App.Services
                 return (default(Book)!, $"No book found in the database with Id: {id}.", HttpStatusCode.NotFound);
         }
 
-        public async Task<(Book book, string message, HttpStatusCode statusCode)> Restore(int id)
+        public async Task<(Book book, string message, HttpStatusCode statusCode)> Delete(int id)
         {
             var book = await _context.Books.FindAsync(id);
-            if (book != null)
+            var loan = await _context.Loans.FirstOrDefaultAsync(l => l.BookId == id && l.Status == "Approved");
+
+            if (book != null && loan == null)
             {
                 if (book.Status == "inactive")
                 {
@@ -108,21 +110,7 @@ namespace ServeBooks.App.Services
             }
             else
                 return (default(Book)!, $"No book found in the database with Id: {id}.", HttpStatusCode.NotFound);
+
         }
-
-         //Usuarios pueden consultar disponibilidad de libros y fechas de vencimiento de préstamos. Proveer información precisa y actualizada.
-
-      public async Task<(IEnumerable<Book> books, string message, HttpStatusCode statusCode)> Getavailable()
-        {
-
-            var books = await _context.Books.Include(l => l.Loans).Where(f => f.Status!.ToLower() == "available").ToListAsync();
-            if (books.Any())
-                return (books, "Books have been successfully obtained.", HttpStatusCode.OK);
-
-
-            else
-                return (Enumerable.Empty<Book>(), "No books found in the database.", HttpStatusCode.NotFound);
-        }    
-
     }
 }

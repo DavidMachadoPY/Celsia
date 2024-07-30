@@ -43,72 +43,21 @@ namespace ServeBooks.App.Services
 
         public async Task<(IEnumerable<Loan> loans, string message, HttpStatusCode statusCode)> GetAll()
         {
-            var loans = await _context.Loans.Include(l => l.Book).Include(l => l.User).Include(l => l.User).Where(l => l.Status!.ToLower() == "available").ToListAsync();
+            var loans = await _context.Loans.Include(l => l.Book).Include(l => l.User)
+            .Where(l => l.UserID == l.User!.Id).ToListAsync();
             if (loans.Any())
                 return (loans, "Loans have been successfully obtained.", HttpStatusCode.OK);
             else
                 return (Enumerable.Empty<Loan>(), "No loans found in the database.", HttpStatusCode.NotFound);
         }
 
-        public async Task<(IEnumerable<Loan> loans, string message, HttpStatusCode statusCode)> GetAllDeleted()
-        {
-            var loans = await _context.Loans.Include(l => l.Book).Include(l => l.User).Where(l => l.Status!.ToLower() == "inactive").ToListAsync();
-            if (loans.Any())
-                return (loans, "Deleted loans have been successfully obtained.", HttpStatusCode.OK);
-            else
-                return (Enumerable.Empty<Loan>(), "No deleted loans found in the database.", HttpStatusCode.NotFound);
-        }
-
         public async Task<(Loan loan, string message, HttpStatusCode statusCode)> GetById(int id)
         {
-            var loan = await _context.Loans.Include(l => l.Book).Include(l => l.User).FirstOrDefaultAsync(l => l.Id.Equals(id));
+            var loan = await _context.Loans.Include(l => l.Book).Include(l => l.User).Where(l => l.UserID == l.User!.Id).FirstOrDefaultAsync(l => l.Id.Equals(id));
             if (loan != null)
                 return (loan, "Loan has been successfully obtained.", HttpStatusCode.OK);
             else
                 return (default(Loan)!, $"No loan found in the database with Id: {id}.", HttpStatusCode.NotFound);
-        }
-
-        public async Task<(Loan loan, string message, HttpStatusCode statusCode)> Delete(int id)
-        {
-            var loan = await _context.Loans.FindAsync(id);
-            if (loan != null)
-            {
-                if (loan.Status == "available")
-                {
-                    return (loan, $"The Loan with Id: {id} is already available.", HttpStatusCode.NotFound);
-                }
-                else
-                {
-                    loan.Status = "available";
-                    _context.Entry(loan).State = EntityState.Modified;
-                    await _context.SaveChangesAsync();
-                    return (loan, "The loan has been restored correctly.", HttpStatusCode.OK);
-                }
-            }
-            else
-                return (default(Loan)!, $"No loan found in the database with Id: {id}.", HttpStatusCode.NotFound);
-        }
-
-        public async Task<(Loan loan, string message, HttpStatusCode statusCode)> Restore(int id)
-        {
-            var loan = await _context.Loans.FindAsync(id);
-            if (loan != null)
-            {
-                if (loan.Status == "inactive")
-                {
-                    return (loan, $"The Loan with Id: {id} is already deleted.", HttpStatusCode.NotFound);
-                }
-                else
-                {
-                    loan.Status = "inactive";
-                    _context.Entry(loan).State = EntityState.Modified;
-                    await _context.SaveChangesAsync();
-                    return (loan, "The loan has been deleted correctly.", HttpStatusCode.OK);
-                }
-            }
-            else
-                return (default(Loan)!, $"No loan found in the database with Id: {id}.", HttpStatusCode.NotFound);
-
         }
     }
 }

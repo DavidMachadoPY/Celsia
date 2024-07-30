@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ServeBooks.App.Interfaces;
-using ServeBooks.Controllers.Loans;
 using ServeBooks.DTOs;
 using System.Net;
 
@@ -21,9 +20,12 @@ namespace ServeBooks.Controllers.Loans
         [Route("api/loans")]
         public async Task<IActionResult> Create([FromBody] LoanDTO loanDto)
         {
-             if (!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                return BadRequest("The Loans fields cannot be null.");
+                return BadRequest(new{
+                    Message = "The Loans fields cannot be null.",
+                    ModelState = ModelState
+                });
             }
             
             try
@@ -35,7 +37,7 @@ namespace ServeBooks.Controllers.Loans
                         Message = message
                     });
                 }
-                return CreatedAtAction(nameof(LoansController.GetById), new { id = result.Id }, new {
+                return CreatedAtAction(nameof(LoansController.GetById),"Loans", new { id = result.Id }, new {
                     Message = message,
                     Data = result
                 });

@@ -21,9 +21,9 @@ namespace ServeBooks.Controllers.Books
         [Route("api/books")]
         public async Task<IActionResult> Create([FromBody] BookDTO bookDto)
         {
-             if (!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                return BadRequest("The Books fields cannot be null.");
+                return BadRequest("The Books fields cannot be null or invalid.");
             }
             
             try
@@ -35,7 +35,7 @@ namespace ServeBooks.Controllers.Books
                         Message = message
                     });
                 }
-                return CreatedAtAction(nameof(BooksController.GetById), new { id = result.Id }, new {
+                return CreatedAtAction(nameof(BooksController.GetById),"Books", new { id = result.Id }, new {
                     Message = message,
                     Data = result
                 });
