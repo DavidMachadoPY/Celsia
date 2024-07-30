@@ -108,6 +108,7 @@ namespace ServeBooks.App.Services
             }
             else
                 return (default(Loan)!, $"No loan found in the database with Id: {id}.", HttpStatusCode.NotFound);
+
         }
     }
 }
