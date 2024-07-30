@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ServeBooks.App.Interfaces;
 using ServeBooks.DTOs;
-using ServeBooks.Models;
 using System.Net;
 
 
@@ -21,33 +20,42 @@ namespace ServeBooks.Controllers.Books
 
         [HttpPut]
         [Route("api/books/{id}")]
-        public async Task<IActionResult> Update(int id, [FromBody]BookDTO book)
+        public async Task<IActionResult> Update(int id, [FromBody] BookDTO bookDto)
         {
-            if (book == null)
+            if (!ModelState.IsValid)
             {
-                return BadRequest("The book fields are invalid.");
+                return BadRequest("The book fields cannot be null or invalid.");
             }
-            
+
             try
             {
-                var (result, message, statusCode) = await _repository.Update(id, book);
-                if(statusCode == HttpStatusCode.OK)
+                var (result, message, statusCode) = await _repository.Update(id, bookDto);
+                if (statusCode == HttpStatusCode.OK)
                 {
-                    return Ok(new {
+                    return Ok(new
+                    {
                         Message = message,
-                        Result = result
+                        Data = result
                     });
                 }
                 else if (statusCode == HttpStatusCode.NotFound)
                 {
-                    return NotFound(message);
+                    return NotFound(new
+                    {
+                        Message = message
+                    });
                 }
-                return StatusCode((int)statusCode, message);
-            
+                return StatusCode((int)statusCode, new
+                {
+                    Message = message
+                });
             }
             catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, $"Error updating the owner: {ex.Message}");
+                return StatusCode(500, new
+                {
+                    Message = $"Error updating book: {ex.Message}"
+                });
             }
         }
 
@@ -55,12 +63,18 @@ namespace ServeBooks.Controllers.Books
         [Route("api/books/{id}/delete")]
         public async Task<IActionResult> Delete(int id)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("The book fields cannot be null or invalid.");
+            }
+
             try
             {
                 var (result, message, statusCode) = await _repository.Delete(id);
-                if(statusCode == HttpStatusCode.OK)
+                if (statusCode == HttpStatusCode.OK)
                 {
-                    return Ok(new {
+                    return Ok(new
+                    {
                         Message = message,
                         Result = result
                     });
@@ -81,12 +95,18 @@ namespace ServeBooks.Controllers.Books
         [Route("api/books/{id}/restore")]
         public async Task<IActionResult> Restore(int id)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("The book fields cannot be null or invalid.");
+            }
+            
             try
             {
                 var (result, message, statusCode) = await _repository.Restore(id);
-                if(statusCode == HttpStatusCode.OK)
+                if (statusCode == HttpStatusCode.OK)
                 {
-                    return Ok(new {
+                    return Ok(new
+                    {
                         Message = message,
                         Result = result
                     });
