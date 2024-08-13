@@ -3,20 +3,21 @@ using Microsoft.AspNetCore.Mvc;
 using ServeBooks.App.Interfaces;
 using System.Net;
 
-namespace ServeBooks.Controllers.Books
+namespace ServeBooks.Controllers.Invoices
 {
     /*[ApiController]
     [Route("api/[controller]")]*/
-    public class BooksController : ControllerBase
+    public class InvoicesController : ControllerBase
     {
-        private readonly IBooksRepository _repository;
-        public BooksController(IBooksRepository repository)
+        private readonly IInvoicesRepository _repository;
+
+        public InvoicesController(IInvoicesRepository repository)
         {
             _repository = repository;
         }
 
         [HttpGet]
-        [Route("api/books")]
+        [Route("api/invoices")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetAll()
         {
@@ -36,12 +37,12 @@ namespace ServeBooks.Controllers.Books
             }
             catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, $"Error obtaining books: {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Error obtaining invoices: {ex.Message}");
             }
         }
 
         [HttpGet]
-        [Route("api/books/available")]
+        [Route("api/invoices/available")]
         public async Task<IActionResult> GetAllAvailable()
         {
             try
@@ -60,13 +61,13 @@ namespace ServeBooks.Controllers.Books
             }
             catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, $"Error obtaining books: {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Error obtaining invoices: {ex.Message}");
             }
         }
 
         [HttpGet]
-        [Route("api/books/deleted")]
-        [Authorize(Roles = "Admin")]    
+        [Route("api/invoices/deleted")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetAllDeleted()
         {
             try
@@ -85,32 +86,32 @@ namespace ServeBooks.Controllers.Books
             }
             catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, $"Error obtaining books: {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Error obtaining invoices: {ex.Message}");
             }
         }
 
         [HttpGet]
-        [Route("api/books/{id}")]
+        [Route("api/invoices/{id}")]
         public async Task<IActionResult> GetById(int id)
         {
             try
             {
-                var (book, message, statusCode) = await _repository.GetById(id);
+                var (invoice, message, statusCode) = await _repository.GetById(id);
 
                 if (statusCode == HttpStatusCode.OK)
                 {
-                    return Ok(new { Message = message, Data = book });
+                    return Ok(new { Message = message, Data = invoice });
                 }
                 else if (statusCode == HttpStatusCode.NotFound)
                 {
                     return NotFound(new { Message = message });
                 }
                 return StatusCode((int)statusCode, new { Message = message });
-                
+
             }
             catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, $"Error obtaining book with Id: {id}: {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Error obtaining invoice with Id: {id}: {ex.Message}");
             }
         }
     }

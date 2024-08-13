@@ -8,23 +8,26 @@ namespace ServeBooks.App.Utils
     {
         public MappingProfile()
         {
-            CreateMap<BookDTO, Book>();
-            CreateMap<Book, BookDTO>().ReverseMap();
+            // Mappings for Invoice and related DTOs
+            CreateMap<InvoiceDTO, Invoice>();
+            CreateMap<Invoice, InvoiceDTO>().ReverseMap();
             
-            CreateMap<BookGetDTO, Book>(); 
-            CreateMap<Book, BookGetDTO>().ReverseMap();
+            CreateMap<InvoiceGetDTO, Invoice>(); 
+            CreateMap<Invoice, InvoiceGetDTO>().ReverseMap();
 
+            // Mappings for User and related DTOs
             CreateMap<UserDTO, User>();
             CreateMap<User, UserDTO>().ReverseMap();
 
-            CreateMap<LoanDTO, Loan>();
-            CreateMap<Loan, LoanDTO>().ReverseMap();
+            // Mappings for Transaction and related DTOs
+            CreateMap<TransactionDTO, Transaction>();
+            CreateMap<Transaction, TransactionDTO>().ReverseMap();
 
-            CreateMap<LoanGetDTO, Loan>(); 
-            CreateMap<Loan, LoanGetDTO>().ReverseMap();
+            CreateMap<TransactionGetDTO, Transaction>(); 
+            CreateMap<Transaction, TransactionGetDTO>();
 
-            CreateMap<LoanCreateDTO, Loan>(); 
-            CreateMap<Loan, LoanCreateDTO>().ReverseMap();
+            CreateMap<TransactionCreateDTO, Transaction>(); 
+            CreateMap<Transaction, TransactionCreateDTO>().ReverseMap();
         }
     }
 }

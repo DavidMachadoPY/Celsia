@@ -4,32 +4,31 @@ using ServeBooks.App.Interfaces;
 using ServeBooks.DTOs;
 using System.Net;
 
-
-namespace ServeBooks.Controllers.Books
+namespace ServeBooks.Controllers.Transactions
 {
     /*[ApiController]
     [Route("api/[controller]")]*/
-    [Authorize(Roles = "Admin")]
-    public class BooksUpdateController : ControllerBase
+    public class TransactionsUpdateController : ControllerBase
     {
-        private readonly IBooksRepository _repository;
-        public BooksUpdateController(IBooksRepository repository)
+        private readonly ITransactionsRepository _repository;
+        public TransactionsUpdateController(ITransactionsRepository repository)
         {
             _repository = repository;
         }
 
         [HttpPut]
-        [Route("api/books/{id}")]
-        public async Task<IActionResult> Update(int id, [FromBody] BookDTO bookDto)
+        [Route("api/transactions/{id}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Update(int id, [FromBody] TransactionDTO transactionDto)
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest("The book fields cannot be null or invalid.");
+                return BadRequest("The transaction fields cannot be null or invalid.");
             }
 
             try
             {
-                var (result, message, statusCode) = await _repository.Update(id, bookDto);
+                var (result, message, statusCode) = await _repository.Update(id, transactionDto);
                 if (statusCode == HttpStatusCode.OK)
                 {
                     return Ok(new
@@ -54,72 +53,80 @@ namespace ServeBooks.Controllers.Books
             {
                 return StatusCode(500, new
                 {
-                    Message = $"Error updating book: {ex.Message}"
+                    Message = $"Error updating transaction: {ex.Message}"
                 });
             }
         }
 
         [HttpPut]
-        [Route("api/books/{id}/delete")]
-        public async Task<IActionResult> Delete(int id)
+        [Route("api/transactions/{id}/approve")]
+        public async Task<IActionResult> ApproveTransaction(int id)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest("The book fields cannot be null or invalid.");
-            }
-
             try
             {
-                var (result, message, statusCode) = await _repository.Delete(id);
+                var (result, message, statusCode) = await _repository.ApproveTransaction(id);
                 if (statusCode == HttpStatusCode.OK)
                 {
                     return Ok(new
                     {
                         Message = message,
-                        Result = result
+                        Data = result
                     });
                 }
                 else if (statusCode == HttpStatusCode.NotFound)
                 {
-                    return NotFound(message);
+                    return NotFound(new
+                    {
+                        Message = message
+                    });
                 }
-                return StatusCode((int)statusCode, message);
+                return StatusCode((int)statusCode, new
+                {
+                    Message = message
+                });
             }
             catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, $"Error deleting the book: {ex.Message}");
+                return StatusCode(500, new
+                {
+                    Message = $"Error approving transaction: {ex.Message}"
+                });
             }
         }
 
         [HttpPut]
-        [Route("api/books/{id}/restore")]
-        public async Task<IActionResult> Restore(int id)
+        [Route("api/transactions/{id}/reject")]
+        public async Task<IActionResult> RejectTransaction(int id)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest("The book fields cannot be null or invalid.");
-            }
-            
             try
             {
-                var (result, message, statusCode) = await _repository.Restore(id);
+                var (result, message, statusCode) = await _repository.RejectTransaction(id);
                 if (statusCode == HttpStatusCode.OK)
                 {
                     return Ok(new
                     {
                         Message = message,
-                        Result = result
+                        Data = result
                     });
                 }
                 else if (statusCode == HttpStatusCode.NotFound)
                 {
-                    return NotFound(message);
+                    return NotFound(new
+                    {
+                        Message = message
+                    });
                 }
-                return StatusCode((int)statusCode, message);
+                return StatusCode((int)statusCode, new
+                {
+                    Message = message
+                });
             }
             catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, $"Error restoring the book: {ex.Message}");
+                return StatusCode(500, new
+                {
+                    Message = $"Error rejecting transaction: {ex.Message}"
+                });
             }
         }
     }

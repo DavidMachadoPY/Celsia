@@ -10,9 +10,10 @@ namespace ServeBooks.App.Services
 {
     public class UsersRepository : IUsersRepository
     {
-        private readonly ServeBooksContext _context;
+        private readonly celsiaContext _context;
         private readonly IMapper _mapper;
-        public UsersRepository(ServeBooksContext context, IMapper mapper)
+
+        public UsersRepository(celsiaContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;
@@ -21,7 +22,7 @@ namespace ServeBooks.App.Services
         public async Task<(User user, string message, HttpStatusCode statusCode)> Update(int id, UserDTO user)
         {
             var userUpdate = await _context.Users.FindAsync(id);
-            if (userUpdate!= null)
+            if (userUpdate != null)
             {
                 user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
                 _mapper.Map(user, userUpdate);
@@ -35,7 +36,7 @@ namespace ServeBooks.App.Services
 
         public async Task<(IEnumerable<User> users, string message, HttpStatusCode statusCode)> GetAll()
         {
-            var users = await _context.Users.Include(u => u.Loans).ToListAsync();
+            var users = await _context.Users.Include(u => u.Transactions).ToListAsync(); // Renombrado desde Loans a Transactions
             if (users.Any())
                 return (users, "Users have been successfully obtained.", HttpStatusCode.OK);
             else
@@ -44,11 +45,11 @@ namespace ServeBooks.App.Services
 
         public async Task<(User user, string message, HttpStatusCode statusCode)> GetById(int id)
         {
-            var user = await _context.Users.Include(u => u.Loans).FirstOrDefaultAsync(u => u.Id.Equals(id));
+            var user = await _context.Users.Include(u => u.Transactions).FirstOrDefaultAsync(u => u.Id.Equals(id)); // Renombrado desde Loans a Transactions
             if (user != null)
                 return (user, "User has been successfully obtained.", HttpStatusCode.OK);
             else
                 return (default(User)!, $"No user found in the database with Id: {id}.", HttpStatusCode.NotFound);
-        }     
+        }
     }
 }

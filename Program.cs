@@ -33,7 +33,7 @@ builder.Services.AddCors(options =>
 });
 
 //Configure DbContext
-builder.Services.AddDbContext<ServeBooksContext>(options =>
+builder.Services.AddDbContext<celsiaContext>(options =>
 {
     options.UseMySql(builder.Configuration.GetConnectionString("MySql"), Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.20-mysql"));
 });

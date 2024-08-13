@@ -12,28 +12,28 @@ namespace ServeBooks.Controllers
     [Route("api/[controller]")]
     public class ExcelController : ControllerBase
     {
-        private readonly IExcelRepository _Repository;
+        private readonly IExcelRepository _repository;
 
-        public ExcelController(IExcelRepository Repository)
+        public ExcelController(IExcelRepository repository)
         {
-            _Repository = Repository;
+            _repository = repository;
         }
 
-        //Method to download Excel file with the data of customer
-        [HttpGet("{CustomerId}")]
-        public IActionResult Get(int CustomerId)
+        // Method to download Excel file with the data of a specific user's transactions
+        [HttpGet("{userId}")]
+        public IActionResult GetUserTransactions(int userId)
         {
-            var fileBytes = _Repository.DowloadCustomerFile(CustomerId);
-            return File(fileBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", $"Estadisticas.xlsx");
+            var fileBytes = _repository.DownloadUserFile(userId);
+            return File(fileBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", $"UserTransactions_{userId}.xlsx");
         }
 
-        //Method to download Excel file with the data of books and customers
+        // Method to download Excel file with the data of all invoices and users
         [Authorize(Roles = "Admin")]
-        [HttpGet]
-        public IActionResult GetStadistics()
+        [HttpGet("statistics")]
+        public IActionResult GetStatistics()
         {
-            var fileBytes = _Repository.DowloadStadisticsFile();
-            return File(fileBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", $"Estadisticas.xlsx");
+            var fileBytes = _repository.DownloadStatisticsFile();
+            return File(fileBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", $"Statistics.xlsx");
         }
     }
 }

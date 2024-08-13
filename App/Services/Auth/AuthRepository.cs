@@ -16,10 +16,10 @@ namespace ServeBooks.App.Services.Auth
 {
     public class AuthRepository : IAuthRepository
     {
-        private readonly ServeBooksContext _context;
+        private readonly celsiaContext _context;
         private readonly IConfiguration _configuration;
 
-        public AuthRepository(ServeBooksContext context, IConfiguration configuration)
+        public AuthRepository(celsiaContext context, IConfiguration configuration)
         {
             _context = context;
             _configuration = configuration;
@@ -43,6 +43,8 @@ namespace ServeBooks.App.Services.Auth
                 Name = name,
                 Email = email,
                 Password = hashedPassword,  
+                Address = "1111",
+                Phone = "11111111",
                 Role = "User",
                 RegistrationDate = DateTime.Now
             };
@@ -96,7 +98,7 @@ namespace ServeBooks.App.Services.Auth
 
         public async Task<(User login, string message, HttpStatusCode statusCode)> AuthenticateUser(string email, string password)
         {
-            var user = await _context.Users.Include(u => u.Loans!).SingleOrDefaultAsync(u => u.Email == email);
+            var user = await _context.Users.Include(u => u.Transactions!).SingleOrDefaultAsync(u => u.Email == email);
             if (user == null || !BCrypt.Net.BCrypt.Verify(password, user.Password!))
             {
                 return (null!, "The email or password is incorrect.", HttpStatusCode.NotFound);
